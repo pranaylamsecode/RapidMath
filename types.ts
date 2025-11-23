@@ -20,6 +20,7 @@ export interface DrillResult {
   totalQuestions: number;
   timeTaken: number; // in seconds
   accuracy: number;
+  maxStreak: number;
   details: {
     questionId: string;
     isCorrect: boolean;

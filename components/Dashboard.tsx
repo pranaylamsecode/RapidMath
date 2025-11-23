@@ -1,6 +1,6 @@
 import React from 'react';
 import { User, QuestionType } from '../types';
-import { Play, TrendingUp, Clock, Target, Award } from 'lucide-react';
+import { Play, TrendingUp, Clock, Target, Award, Zap } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -25,6 +25,8 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onStartDrill, onLogout }) =
   const avgScore = totalDrills > 0 
     ? Math.round(user.history.reduce((acc, curr) => acc + curr.score, 0) / totalDrills)
     : 0;
+  
+  const bestStreak = user.history.reduce((max, curr) => Math.max(max, curr.maxStreak || 0), 0);
   
   // Recent 5 performance for chart
   const recentPerformance = user.history.slice(-5).map((h, i) => ({
@@ -90,25 +92,22 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onStartDrill, onLogout }) =
 
         <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 backdrop-blur-sm">
           <div className="flex items-center space-x-3 mb-2">
-            <div className="p-2 bg-purple-500/20 rounded-lg">
-              <Award className="w-5 h-5 text-purple-400" />
+            <div className="p-2 bg-yellow-500/20 rounded-lg">
+              <Zap className="w-5 h-5 text-yellow-400" />
             </div>
-            <h3 className="text-slate-400 font-medium">Drills Completed</h3>
+            <h3 className="text-slate-400 font-medium">Best Streak</h3>
           </div>
-          <p className="text-3xl font-bold text-white">{totalDrills}</p>
+          <p className="text-3xl font-bold text-white">{bestStreak}</p>
         </div>
 
         <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 backdrop-blur-sm">
           <div className="flex items-center space-x-3 mb-2">
             <div className="p-2 bg-emerald-500/20 rounded-lg">
-              <Target className="w-5 h-5 text-emerald-400" />
+              <Award className="w-5 h-5 text-emerald-400" />
             </div>
-            <h3 className="text-slate-400 font-medium">Accuracy Trend</h3>
+            <h3 className="text-slate-400 font-medium">Drills Completed</h3>
           </div>
-          <div className="h-10 w-full mt-2">
-             {/* Mini Sparkline logic or just text */}
-             <p className="text-sm text-emerald-400">+12% this week</p>
-          </div>
+          <p className="text-3xl font-bold text-white">{totalDrills}</p>
         </div>
       </div>
 
@@ -154,7 +153,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onStartDrill, onLogout }) =
           </div>
         </div>
 
-        {/* Right: History / Leaderboard Mockup */}
+        {/* Right: History */}
         <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700 h-fit">
           <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
             <Clock className="w-5 h-5 text-slate-400" /> History
@@ -173,7 +172,9 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onStartDrill, onLogout }) =
                     <p className={`font-bold ${h.score >= 80 ? 'text-green-400' : 'text-yellow-400'}`}>
                       {h.score.toFixed(0)}%
                     </p>
-                    <p className="text-xs text-slate-400">{h.timeTaken.toFixed(1)}s</p>
+                    <p className="text-xs text-slate-400 flex items-center justify-end gap-1">
+                        <Zap className="w-3 h-3 text-yellow-500" /> {h.maxStreak || 0}
+                    </p>
                   </div>
                 </div>
               ))

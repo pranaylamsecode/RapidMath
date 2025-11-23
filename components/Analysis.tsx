@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DrillResult } from '../types';
 import { getDrillAnalysis } from '../services/gemini';
-import { Brain, RotateCcw, Home, Check, X } from 'lucide-react';
+import { Brain, RotateCcw, Home, Check, X, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface AnalysisProps {
@@ -26,6 +26,7 @@ const Analysis: React.FC<AnalysisProps> = ({ result, onRetry, onHome }) => {
       const advice = await getDrillAnalysis({
         topic: result.topic,
         score: result.score,
+        maxStreak: result.maxStreak,
         details: simplifiedDetails
       });
       setAiAdvice(advice);
@@ -36,11 +37,26 @@ const Analysis: React.FC<AnalysisProps> = ({ result, onRetry, onHome }) => {
 
   return (
     <div className="max-w-4xl mx-auto w-full p-4 lg:p-8 pb-20">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-white mb-2">Drill Complete!</h1>
-        <div className="text-6xl font-mono font-bold text-brand-400 my-6">
-          {Math.round(result.score)}<span className="text-2xl text-slate-500">%</span>
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-bold text-white mb-2">Drill Complete</h1>
+        <div className="flex justify-center items-center gap-6 my-6">
+            <div className="text-center">
+                <div className="text-6xl font-mono font-bold text-brand-400">
+                    {Math.round(result.score)}<span className="text-2xl text-slate-500">%</span>
+                </div>
+                <div className="text-xs text-slate-500 uppercase tracking-widest mt-1">Accuracy</div>
+            </div>
+            
+            <div className="h-16 w-px bg-slate-700"></div>
+            
+            <div className="text-center">
+                <div className="text-6xl font-mono font-bold text-yellow-400 flex items-center justify-center">
+                    {result.maxStreak} <Zap className="w-8 h-8 ml-2 text-yellow-500 fill-yellow-500" />
+                </div>
+                <div className="text-xs text-slate-500 uppercase tracking-widest mt-1">Max Streak</div>
+            </div>
         </div>
+        
         <p className="text-slate-400">
           Time: <span className="text-white">{result.timeTaken.toFixed(1)}s</span> • 
           Avg: <span className="text-white">{(result.timeTaken / result.totalQuestions).toFixed(1)}s/q</span>
@@ -78,12 +94,12 @@ const Analysis: React.FC<AnalysisProps> = ({ result, onRetry, onHome }) => {
         <div className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 p-6 rounded-2xl border border-indigo-500/30">
           <div className="flex items-center gap-2 mb-4">
             <Brain className="w-6 h-6 text-indigo-400" />
-            <h3 className="text-xl font-bold text-white">AI Coach Insights</h3>
+            <h3 className="text-xl font-bold text-white">Gemini Coach</h3>
           </div>
           
           <div className="text-slate-300 leading-relaxed text-sm space-y-2">
             {loadingAi ? (
-              <div className="flex space-x-1 animate-pulse">
+              <div className="flex space-x-1 animate-pulse py-4">
                 <div className="w-2 h-2 bg-indigo-400 rounded-full"></div>
                 <div className="w-2 h-2 bg-indigo-400 rounded-full animation-delay-200"></div>
                 <div className="w-2 h-2 bg-indigo-400 rounded-full animation-delay-400"></div>
@@ -99,7 +115,7 @@ const Analysis: React.FC<AnalysisProps> = ({ result, onRetry, onHome }) => {
       </div>
 
       {/* Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-slate-900/80 backdrop-blur-md border-t border-slate-800 flex justify-center gap-4">
+      <div className="fixed bottom-0 left-0 right-0 p-6 bg-slate-900/80 backdrop-blur-md border-t border-slate-800 flex justify-center gap-4 z-40">
         <button 
           onClick={onRetry}
           className="flex items-center gap-2 px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-900/20"

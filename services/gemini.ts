@@ -21,7 +21,7 @@ export const generateQuestions = async (topic: QuestionType, count: number = 5):
         options: { 
           type: Type.ARRAY, 
           items: { type: Type.STRING },
-          description: "4-5 plausible options including the correct one."
+          description: "Exactly 5 plausible options including the correct one."
         }
       },
       required: ["id", "type", "questionText", "correctAnswer", "explanation", "options"]
@@ -32,10 +32,13 @@ export const generateQuestions = async (topic: QuestionType, count: number = 5):
     Generate ${count} unique, challenging IBPS RRB PO level math questions for the topic: "${topic}".
     
     Guidelines:
-    - For 'Number Series', provide the series with a missing term (marked as ?) or finding the wrong term.
-    - For 'Simplification/Approximation', use standard BODMAS rules. Complex calculations but solvable mentally or with quick scribbling.
-    - For 'Quadratic Equations', provide two equations (I and II) involving x and y. The answer should be the relationship (e.g., x > y, x <= y, etc.).
-    - Ensure answers are distinct and correct.
+    - **Options**: EXACTLY 5 options are required for every question.
+    - **Simplification/Approximation**: Use standard BODMAS. For Approximation, use values like 14.99% or 120.01. Answer matches one option exactly.
+    - **Number Series**: Provide the sequence. Question text: "Find the missing term: 12, 24, ?, 96".
+    - **Quadratic Equations**: Two equations (I and II). Answer choices MUST be: "x > y", "x >= y", "x < y", "x <= y", "x = y or no relation".
+    - **Difficulty**: Moderate to High (PO Prelims/Mains level).
+    
+    Ensure answers are unambiguous.
   `;
 
   try {
@@ -67,7 +70,8 @@ export const getDrillAnalysis = async (results: any): Promise<string> => {
      Analyze this student's math drill performance:
      ${JSON.stringify(results)}
      
-     Provide 3 concise, bullet-pointed tips to improve their speed and accuracy for IBPS PO exams. Focus on the types of errors made.
+     Provide 3 concise, bullet-pointed tips to improve their speed and accuracy for IBPS PO exams. Focus on the types of errors made and time management.
+     Be encouraging but technical (e.g., "Use unit digit method" or "Memorize squares up to 30").
    `;
 
    try {
